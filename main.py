@@ -21,9 +21,9 @@ class Main:
         while self.runningState:
             print(self.simulator.run())
 
-            strategy = Strategy(self.bitmexapi)
-            # print(strategy.volatility_breakout())
-            print(eval(f"strategy.{self.simulator.run()}()"))
+            # strategy = Strategy(self.bitmexapi)
+            # # print(strategy.volatility_breakout())
+            # print(eval(f"strategy.{self.simulator.run()}()"))
             sleep(1)
 
     def stopRunning(self) -> None:
