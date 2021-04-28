@@ -2,8 +2,13 @@ from logic.strategy import Strategy
 from api.bitmexAPI import BitmexAPI
 from api.simulAPI import SimulAPI
 from simulator import Simulator
+from util.db_engine import DBengine
 
 from time import sleep
+import pandas as pd
+import sys
+
+from config import config
 
 
 class Main:
@@ -13,22 +18,43 @@ class Main:
 
     def __init__(self) -> None:
         self.runningState = True
-        self.bitmexapi = BitmexAPI()
-        self.simulator = Simulator()
+        # self.bitmexapi = BitmexAPI(config.BASE_URL, config.SYMBOL, config.API_KEY,
+        #                            config.SECRET_KEY, ["tradeBin1m", "quoteBin1m"])
+        # self.ws = self.bitmexapi.ws
+        self.db_engine = DBengine.engine
+        self.simulator = Simulator(self.db_engine)
 
     def run(self) -> None:
         '''Run the Trader'''
         while self.runningState:
-            print(self.simulator.run())
+            # 콜렉터는 쓰레드로 항시 실행
+            print(
+                f"simulAPI의 데이터가 비었는가?{self.simulator.simulapi.data['instrument'] == []}")
+            if self.simulator.simulapi.data['instrument'] == []:
+                # 콜렉터부터 실행
+                pass
+            else:
+                self.simulator.run()
+            # self.runCollector(self.runningState)
+            # if self.simulapi.data:
+            #     strategy = self.simulator.run()
+            #     print(strategy)
+            # else:
+            #     print("collector 후에 다시 실행")
 
-            # strategy = Strategy(self.bitmexapi)
-            # # print(strategy.volatility_breakout())
-            # print(eval(f"strategy.{self.simulator.run()}()"))
-            sleep(1)
+            sleep(.5)
 
     def stopRunning(self) -> None:
         '''Stop the Trader.'''
         self.runningState = False
+
+    def runCollector(self, runningState) -> None:
+        from collector import Collector
+        collector = Collector(self.ws, self.db_engine.engine)
+        collector.run(runningState)
+
+    def _exit(self) -> None:
+        sys.exit(0)
 
 
 if __name__ == "__main__":

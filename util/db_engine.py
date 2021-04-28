@@ -16,15 +16,14 @@ class DBengine:
         database=config.db_name
     )
     try:
-        engine = create_engine(db_url, echo=True)
+        engine = create_engine(db_url, echo=False)
     except Exception as e:
         print(e)
 
 
 if __name__ == "__main__":
-
-    print(DBengine.engine)
     import pandas as pd
+    print(DBengine.engine)
     sql = '''
     select * from TBL_BITMEX_OHLCV ORDER BY timestamp DESC
     '''
