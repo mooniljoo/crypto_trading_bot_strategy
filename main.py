@@ -28,13 +28,14 @@ class Main:
         '''Run the Trader'''
         while self.runningState:
             # 콜렉터는 쓰레드로 항시 실행
-            print(
-                f"simulAPI의 데이터가 비었는가?{self.simulator.simulapi.data['instrument'] == []}")
-            if self.simulator.simulapi.data['instrument'] == []:
+            사전데이터가없나 = False
+            if 사전데이터가없나:
                 # 콜렉터부터 실행
                 pass
             else:
-                self.simulator.run()
+                strategy = self.simulator.run()
+                print(f"STRATEGY NUMBER : {strategy}")
+                break
             # self.runCollector(self.runningState)
             # if self.simulapi.data:
             #     strategy = self.simulator.run()

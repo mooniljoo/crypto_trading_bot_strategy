@@ -8,6 +8,7 @@ import datetime
 
 class Collector:
     def __init__(self, ws, db_engine) -> None:
+        self.__name__ = 'Collector'
         print(f"{self.__class__.__name__} has just started!")
         self.ws = ws
         self.db_engine = db_engine
