@@ -13,15 +13,14 @@ class Simulator:
     DB데이터와 indicator(보조지표)로 시뮬레이팅
     '''
 
-    def __init__(self, db_engine, period: int = 10) -> None:
+    def __init__(self, db_engine) -> None:
         self.__name__ = 'Simulator'
         print(f"{self.__class__.__name__} has just started!")
-        self.period = period
         self.db_engine = db_engine
         self.runningState = True
         self.strategyNumList = [0, 1]
 
-    def run(self) -> str:
+    def run(self, period: int = 10) -> str:
         '''Return strategy after simulation with period'''
         print(f"...{self.__class__.__name__} is running...")
         while self.runningState:
@@ -29,7 +28,7 @@ class Simulator:
             simulNum = 0
             for strategyNum in self.strategyNumList:
                 # intialize api, strategy
-                simulapi = SimulAPI(self.db_engine, self.period)
+                simulapi = SimulAPI(self.db_engine, period)
                 strategy = Strategy(simulapi)
                 print(f"A Strategy Simulation has just started!!")
                 # simulation
@@ -54,7 +53,6 @@ class Simulator:
             resultStrategy = simulResultList.index(max(simulResultList))
             return resultStrategy
 
-        
         # for strategy in self.strategy.strategyList:
         #     print(eval(f"self.strategy.{strategy}()"))
 
@@ -79,7 +77,6 @@ class Simulator:
         #     index += 1
         #     sleep(0.5)
 
-        return resultStrategy
 
     def stopRunning(self) -> None:
         '''Stop the Simulator.'''

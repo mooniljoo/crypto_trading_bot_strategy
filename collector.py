@@ -1,3 +1,4 @@
+import threading
 from time import sleep
 import pandas as pd
 
@@ -6,15 +7,17 @@ import pytz
 import datetime
 
 
-class Collector:
+class Collector(threading.Thread):
     def __init__(self, ws, db_engine) -> None:
+        super().__init__()
         self.__name__ = 'Collector'
-        print(f"{self.__class__.__name__} has just started!")
+        print(f"{self.__name__} thread has just started!")
         self.ws = ws
         self.db_engine = db_engine
+        self.runningState = True
 
-    def run(self, runningState) -> None:
-        while runningState:
+    def run(self) -> None:
+        while self.runningState:
             print(f"...{self.__class__.__name__} is running...")
             # if 'trade' in ws.data:
             #     _list = change_dictItems_in_list(ws.data['trade'], 'timestamp')
@@ -28,10 +31,10 @@ class Collector:
                 df = pd.DataFrame(_list)
                 df.to_sql('TBL_BITMEX_OHLCV', self.db_engine,
                           if_exists="replace")
-                print("추가\n", df)
-            else:
-                print(f"{self.__class__.__name__}가 담을 'tradeBin1m'이 없습니다.")
-                break
+                # print(f"Add to DB ({self.__name__})\n: {df}")
+            # else:
+            #     print(f"{self.__class__.__name__}가 담을 'tradeBin1m'이 없습니다.")
+            #     break
 
             if 'quoteBin1m' in self.ws.data:
                 _list = self.change_dictItems_in_list(
@@ -39,10 +42,10 @@ class Collector:
                 df = pd.DataFrame(_list)
                 df.to_sql('TBL_BITMEX_QUOTE', self.db_engine,
                           if_exists="replace")
-                print("추가\n", df)
-            else:
-                print(f"{self.__class__.__name__}가 담을 'quoteBin1m'이 없습니다.")
-                break
+                # print(f"Add to DB ({self.__name__})\n: {df}")
+            # else:
+            #     print(f"{self.__class__.__name__}가 담을 'quoteBin1m'이 없습니다.")
+            #     break
 
             sleep(1)
         print(f"{self.__class__.__name__} has just finished!")
