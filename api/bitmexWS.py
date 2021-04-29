@@ -255,7 +255,7 @@ class BitmexWebsocket:
         while not {'trade', 'quote'} <= set(self.data):
             sleep(0.1)
 
-    def __on_message(self, ws, message):
+    def __on_message(self, message):
         '''Handler for parsing WS messages.'''
         message = json.loads(message)
         table = message['table'] if 'table' in message else None
@@ -340,14 +340,14 @@ class BitmexWebsocket:
         except:
             print(traceback.format_exc())
 
-    def __on_open(self, ws):
+    def __on_open(self):
         print("Websocket Opened.")
 
-    def __on_close(self, ws):
+    def __on_close(self):
         print('### Websocket Closed ###')
         self.exit()
 
-    def __on_error(self, ws, error):
+    def __on_error(self, error):
         if not self.exited:
             self.error(error)
 
